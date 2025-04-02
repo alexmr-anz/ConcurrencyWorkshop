@@ -159,10 +159,9 @@ func TestDefaultBusyLoop(t *testing.T) {
 			ch <- 1
 			time.Sleep(100 * time.Millisecond)
 		}
+		close(ch)
 	}()
-	close(ch)
 
-	counter := 0
 	for {
 		select {
 		case val, ok := <-ch:
@@ -170,11 +169,6 @@ func TestDefaultBusyLoop(t *testing.T) {
 				return
 			}
 			slog.Info("received", "value", val)
-		default:
-			counter++
-			if counter > 50 {
-				t.Fatalf("Something is wrong")
-			}
 		}
 	}
 }
